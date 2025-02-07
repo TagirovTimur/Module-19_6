@@ -1,0 +1,64 @@
+Переход в проект: cd For_example
+Переход в консоль: python manage.py shell
+
+
+QuerySet запросы:
+
+
+#добавление покупателей
+
+from App1.models import Buyer
+Buyer.objects.create(name='Oleg', balance=20520.35, age=30)
+Buyer.objects.create(name='Nikita', balance=3500.10, age=15)
+Buyer.objects.create(name='Michael', balance=35250.00, age=22)
+
+
+# добавление игр
+
+from App1.models import Games
+Game.objects.create(title='Ведьмак 3: Дикая Охота', cost=15000.00, size=64.567, description='Game of Year', age_limited=1)
+Game.objects.create(title='Perusona 5: Za roiyaru', cost=10000.00, size=34.127, description='Top-10', age_limited=1)
+Game.objects.create(title='Dragon Age: Origins', cost=1000.00, size=11.007, description='Top of Old Games', age_limited=0)
+
+
+
+
+
+# запрос на получение всех объектов базы данных и конкретного по id
+
+Games.objects.all()   
+Buyer.objects.all()
+Games.objects.filter(id=3)
+Buyer.objects.filter(id=1)  
+
+
+# запрос с сортировкой Games по цене игры:
+
+games = Games.objects.order_by('-cost')
+for game in games:
+	print(game.title, game.cost)
+
+
+# запрос с агрегацией (максимальная, минимальная и средняя цены игр)
+
+from django.db.models import Max, Min, Avg
+stats = Games.objects.aggregate(
+max_price=Max('cost'),
+min_price=Min('cost'),
+avg_price=Avg('cost')
+)
+print(stats)
+
+
+#запрос с фильтрацией - игры дешевле 11000
+
+cheap_games = Games.objects.filter(cost__lt=11000)
+for game in cheap_games:
+	print(game.title, game.cost)
+
+
+# запрос на удаление объекта
+delete_buyer = Buyer.objects.get(id=1)
+delete_buyer.delete()
+
+
